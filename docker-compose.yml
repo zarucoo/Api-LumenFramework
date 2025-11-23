@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  php:
+    image: php:8.2-cli
+    container_name: lumen_php
+    working_dir: /app
+    volumes:
+      - ./src:/app
+    command: php -S 0.0.0.0:8000 -t /app/public
+    ports:
+      - "8000:8000"
+    networks:
+      - lumen-network
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: lumen_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: lumen_db
+      MYSQL_USER: lumen_user
+      MYSQL_PASSWORD: lumen_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - lumen-network
+
+networks:
+  lumen-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
